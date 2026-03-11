@@ -8,16 +8,15 @@ import { Switch } from "@/components/ui/switch";
 import {
   getCars, saveCars,
   getHeroImages, saveHeroImages,
-  getReviewsConfig, saveReviewsConfig,
   getSiteConfig, saveSiteConfig,
   fileToDataUrl,
-  type Car, type CarStatus, type HeroImage, type CarImage, type ReviewsConfig, type SiteConfig,
+  type Car, type CarStatus, type HeroImage, type CarImage, type SiteConfig,
 } from "@/data/store";
 import { toast } from "sonner";
 
 const ADMIN_PASS = "oliveras2024";
 
-type Tab = "cars" | "hero" | "contact" | "reviews";
+type Tab = "cars" | "hero";
 
 export default function AdminPanel({ onClose }: { onClose: () => void }) {
   const [authenticated, setAuthenticated] = useState(false);
@@ -26,7 +25,6 @@ export default function AdminPanel({ onClose }: { onClose: () => void }) {
 
   const [cars, setCarsState] = useState(getCars);
   const [heroImages, setHeroImagesState] = useState(getHeroImages);
-  const [reviewsConfig, setReviewsConfigState] = useState(getReviewsConfig);
   const [siteConfig, setSiteConfigState] = useState(getSiteConfig);
 
   const [editingCar, setEditingCar] = useState<Car | null>(null);
@@ -119,9 +117,6 @@ export default function AdminPanel({ onClose }: { onClose: () => void }) {
     saveHeroData(heroImages.map(h => h.id === id ? { ...h, active: !h.active } : h));
   };
 
-  // === REVIEWS CONFIG ===
-  const saveReviewsData = (config: ReviewsConfig) => { setReviewsConfigState(config); saveReviewsConfig(config); };
-
   // === SITE CONFIG ===
   const saveSiteData = (config: SiteConfig) => { setSiteConfigState(config); saveSiteConfig(config); };
 
@@ -151,8 +146,6 @@ export default function AdminPanel({ onClose }: { onClose: () => void }) {
   const tabs: { key: Tab; label: string }[] = [
     { key: "cars", label: "Cotxes" },
     { key: "hero", label: "Hero" },
-    { key: "contact", label: "Contacte" },
-    { key: "reviews", label: "Ressenyes" },
   ];
 
   return (
@@ -314,96 +307,6 @@ export default function AdminPanel({ onClose }: { onClose: () => void }) {
                   </div>
                 </div>
               ))}
-            </div>
-          )}
-
-          {/* ====== CONTACT TAB ====== */}
-          {tab === "contact" && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs font-medium text-muted-foreground mb-1 block">Telèfon</label>
-                  <Input value={siteConfig.phone} onChange={e => setSiteConfigState({ ...siteConfig, phone: e.target.value })} className="rounded-xl" />
-                </div>
-                <div>
-                  <label className="text-xs font-medium text-muted-foreground mb-1 block">Ciutat</label>
-                  <Input value={siteConfig.city} onChange={e => setSiteConfigState({ ...siteConfig, city: e.target.value })} className="rounded-xl" />
-                </div>
-              </div>
-              <div>
-                <label className="text-xs font-medium text-muted-foreground mb-1 block">Adreça</label>
-                <Input value={siteConfig.address} onChange={e => setSiteConfigState({ ...siteConfig, address: e.target.value })} className="rounded-xl" />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs font-medium text-muted-foreground mb-1 block">Codi postal</label>
-                  <Input value={siteConfig.postalCode} onChange={e => setSiteConfigState({ ...siteConfig, postalCode: e.target.value })} className="rounded-xl" />
-                </div>
-                <div>
-                  <label className="text-xs font-medium text-muted-foreground mb-1 block">Província</label>
-                  <Input value={siteConfig.province} onChange={e => setSiteConfigState({ ...siteConfig, province: e.target.value })} className="rounded-xl" />
-                </div>
-              </div>
-              <div>
-                <label className="text-xs font-medium text-muted-foreground mb-1 block">Titular hero</label>
-                <Input value={siteConfig.heroHeadline} onChange={e => setSiteConfigState({ ...siteConfig, heroHeadline: e.target.value })} className="rounded-xl" />
-              </div>
-              <div>
-                <label className="text-xs font-medium text-muted-foreground mb-1 block">Subtítol hero</label>
-                <Input value={siteConfig.heroSubheadline} onChange={e => setSiteConfigState({ ...siteConfig, heroSubheadline: e.target.value })} className="rounded-xl" />
-              </div>
-              <div>
-                <label className="text-xs font-medium text-muted-foreground mb-1 block">Horari setmana</label>
-                <Input value={siteConfig.openingHours} onChange={e => setSiteConfigState({ ...siteConfig, openingHours: e.target.value })} className="rounded-xl" />
-              </div>
-              <div>
-                <label className="text-xs font-medium text-muted-foreground mb-1 block">Cap de setmana</label>
-                <Input value={siteConfig.weekendHours} onChange={e => setSiteConfigState({ ...siteConfig, weekendHours: e.target.value })} className="rounded-xl" />
-              </div>
-              <Button className="rounded-full" onClick={() => { saveSiteData(siteConfig); toast.success("Configuració desada"); }}>
-                <Save className="w-4 h-4 mr-1" /> Desar configuració
-              </Button>
-            </div>
-          )}
-
-          {/* ====== REVIEWS TAB ====== */}
-          {tab === "reviews" && (
-            <div className="space-y-4">
-              <div className="p-4 rounded-xl bg-muted border border-border">
-                <p className="text-xs font-medium text-muted-foreground mb-2">⚙️ Integració Google Reviews</p>
-                <p className="text-xs text-muted-foreground mb-3">Configura el Place ID i clau API de Google per sincronitzar ressenyes reals.</p>
-                <div className="space-y-3">
-                  <div>
-                    <label className="text-xs font-medium text-muted-foreground mb-1 block">Google Place ID</label>
-                    <Input value={reviewsConfig.googlePlaceId} onChange={e => setReviewsConfigState({ ...reviewsConfig, googlePlaceId: e.target.value })} placeholder="ChIJ..." className="rounded-xl text-sm" />
-                  </div>
-                  <div>
-                    <label className="text-xs font-medium text-muted-foreground mb-1 block">Nota / Clau API</label>
-                    <Input value={reviewsConfig.apiKeyNote} onChange={e => setReviewsConfigState({ ...reviewsConfig, apiKeyNote: e.target.value })} className="rounded-xl text-sm" />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <label className="text-xs font-medium text-muted-foreground">Sincronització en viu</label>
-                    <Switch checked={reviewsConfig.liveSyncEnabled} onCheckedChange={v => setReviewsConfigState({ ...reviewsConfig, liveSyncEnabled: v })} />
-                  </div>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs font-medium text-muted-foreground mb-1 block">Valoració</label>
-                  <Input type="number" step="0.1" min="0" max="5" value={reviewsConfig.rating} onChange={e => setReviewsConfigState({ ...reviewsConfig, rating: parseFloat(e.target.value) || 0 })} className="rounded-xl" />
-                </div>
-                <div>
-                  <label className="text-xs font-medium text-muted-foreground mb-1 block">Nombre de ressenyes</label>
-                  <Input type="number" value={reviewsConfig.reviewCount} onChange={e => setReviewsConfigState({ ...reviewsConfig, reviewCount: parseInt(e.target.value) || 0 })} className="rounded-xl" />
-                </div>
-              </div>
-              <div>
-                <label className="text-xs font-medium text-muted-foreground mb-1 block">Text resum alternatiu</label>
-                <Input value={reviewsConfig.fallbackSummary} onChange={e => setReviewsConfigState({ ...reviewsConfig, fallbackSummary: e.target.value })} className="rounded-xl" />
-              </div>
-              <Button className="rounded-full" onClick={() => { saveReviewsData(reviewsConfig); toast.success("Configuració de ressenyes desada"); }}>
-                <Save className="w-4 h-4 mr-1" /> Desar
-              </Button>
             </div>
           )}
         </div>
