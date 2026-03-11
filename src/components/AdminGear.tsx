@@ -9,7 +9,6 @@ export default function AdminGear() {
   const handleClick = () => {
     const now = Date.now();
     clickTimesRef.current.push(now);
-    // Keep only last 3 clicks
     clickTimesRef.current = clickTimesRef.current.slice(-3);
 
     if (clickTimesRef.current.length === 3) {
@@ -25,7 +24,7 @@ export default function AdminGear() {
     <>
       <button
         onClick={handleClick}
-        className="fixed bottom-6 right-6 z-40 w-10 h-10 rounded-full bg-muted/80 hover:bg-muted flex items-center justify-center opacity-30 hover:opacity-60 transition-opacity"
+        className="fixed bottom-6 right-6 z-40 w-10 h-10 rounded-full bg-foreground/5 hover:bg-foreground/10 flex items-center justify-center opacity-20 hover:opacity-50 transition-all"
         aria-label="Configuració"
       >
         <Settings className="w-4 h-4 text-muted-foreground" />

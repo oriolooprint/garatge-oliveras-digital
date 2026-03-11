@@ -6,7 +6,6 @@ import AboutSection from "@/components/AboutSection";
 import ReviewsSection from "@/components/ReviewsSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
-import WhatsAppButton from "@/components/WhatsAppButton";
 import AdminGear from "@/components/AdminGear";
 
 const Index = () => {
@@ -22,7 +21,6 @@ const Index = () => {
         <ContactSection />
       </main>
       <Footer />
-      <WhatsAppButton />
       <AdminGear />
     </>
   );
