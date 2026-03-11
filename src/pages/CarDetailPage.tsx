@@ -1,5 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { getCars, getCarPhotos } from "@/data/store";
+import { useStoreData } from "@/hooks/use-store";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AdminGear from "@/components/AdminGear";
