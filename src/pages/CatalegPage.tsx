@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { getCars, getUniqueBrands } from "@/data/store";
+import { useStoreData } from "@/hooks/use-store";
 import CarCard from "@/components/CarCard";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -9,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 
 export default function CatalegPage() {
-  const allCars = getCars();
+  const allCars = useStoreData(getCars);
   const brands = getUniqueBrands(allCars);
 
   const [brand, setBrand] = useState("all");
