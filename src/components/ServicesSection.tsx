@@ -12,27 +12,28 @@ const services = [
 
 export default function ServicesSection() {
   return (
-    <section id="serveis" className="section-padding">
+    <section id="serveis" className="section-padding bg-background">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12">
-          <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-3">
-            Els nostres <span className="text-primary">serveis</span>
+        <div className="text-center mb-14">
+          <p className="text-primary font-medium text-sm tracking-wider uppercase mb-3">Serveis</p>
+          <h2 className="font-heading text-3xl md:text-4xl font-extrabold text-foreground mb-4">
+            Tot el que el teu cotxe necessita
           </h2>
           <p className="text-muted-foreground max-w-xl mx-auto">
             Oferim un servei complet de mecànica i manteniment per al teu vehicle.
           </p>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
           {services.map((s) => (
             <div
               key={s.title}
-              className="group rounded-lg border border-border bg-card p-6 hover:shadow-lg hover:border-primary/30 transition-all duration-300"
+              className="group rounded-2xl bg-card border border-border p-6 hover:border-primary/20 transition-all duration-300 premium-shadow hover:premium-shadow-hover"
             >
-              <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
-                <s.icon className="w-6 h-6 text-primary" />
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-5 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300">
+                <s.icon className="w-6 h-6 text-primary group-hover:text-primary-foreground transition-colors" />
               </div>
-              <h3 className="font-heading font-semibold text-card-foreground mb-2">{s.title}</h3>
-              <p className="text-sm text-muted-foreground">{s.desc}</p>
+              <h3 className="font-heading font-bold text-card-foreground mb-2">{s.title}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
             </div>
           ))}
         </div>

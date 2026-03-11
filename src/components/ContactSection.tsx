@@ -4,9 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { getSiteConfig } from "@/data/store";
 
 export default function ContactSection() {
   const [form, setForm] = useState({ nom: "", telefon: "", missatge: "" });
+  const config = getSiteConfig();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,11 +21,12 @@ export default function ContactSection() {
   };
 
   return (
-    <section id="contacte" className="section-padding">
+    <section id="contacte" className="section-padding section-dark">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12">
-          <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-3">
-            <span className="text-primary">Contacta</span>'ns
+        <div className="text-center mb-14">
+          <p className="text-primary font-medium text-sm tracking-wider uppercase mb-3">Contacte</p>
+          <h2 className="font-heading text-3xl md:text-4xl font-extrabold text-white mb-4">
+            Contacta'ns
           </h2>
         </div>
 
@@ -31,33 +34,33 @@ export default function ContactSection() {
           {/* Info + Map */}
           <div>
             <div className="space-y-6 mb-8">
-              <div className="flex items-start gap-4">
-                <MapPin className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
+              <div className="flex items-start gap-4 p-4 rounded-2xl bg-white/5 border border-white/10">
+                <MapPin className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                 <div>
-                  <p className="font-semibold text-foreground">Garatge Oliveras S.L.</p>
-                  <p className="text-sm text-muted-foreground">Carretera Orriols - L'Escala, 16, Bajo</p>
-                  <p className="text-sm text-muted-foreground">17137 Viladamat, Girona</p>
+                  <p className="font-semibold text-white">Garatge Oliveras S.L.</p>
+                  <p className="text-sm text-white/60">{config.address}</p>
+                  <p className="text-sm text-white/60">{config.postalCode} {config.city}, {config.province}</p>
                 </div>
               </div>
-              <div className="flex items-start gap-4">
-                <Phone className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
+              <div className="flex items-start gap-4 p-4 rounded-2xl bg-white/5 border border-white/10">
+                <Phone className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                 <div>
-                  <a href="tel:+34972788102" className="font-semibold text-foreground hover:text-primary transition-colors">
-                    +34 972 78 81 02
+                  <a href="tel:+34972788102" className="font-semibold text-white hover:text-primary transition-colors">
+                    {config.phone}
                   </a>
                 </div>
               </div>
-              <div className="flex items-start gap-4">
-                <Clock className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
+              <div className="flex items-start gap-4 p-4 rounded-2xl bg-white/5 border border-white/10">
+                <Clock className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                 <div>
-                  <p className="font-semibold text-foreground mb-1">Horari</p>
-                  <p className="text-sm text-muted-foreground">Dilluns – Divendres: 9:00–13:30 / 15:00–18:30</p>
-                  <p className="text-sm text-muted-foreground">Dissabte i diumenge: Tancat</p>
+                  <p className="font-semibold text-white mb-1">Horari</p>
+                  <p className="text-sm text-white/60">{config.openingHours}</p>
+                  <p className="text-sm text-white/60">{config.weekendHours}</p>
                 </div>
               </div>
             </div>
 
-            <div className="rounded-lg overflow-hidden border border-border aspect-video">
+            <div className="rounded-2xl overflow-hidden border border-white/10 aspect-video">
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2963.5!2d3.0789!3d42.1186!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12ba91d0a5f7b3d7%3A0x4b6f9c0e7a8d5e2f!2sViladamat%2C%20Girona!5e0!3m2!1sca!2ses!4v1690000000000!5m2!1sca!2ses"
                 width="100%"
@@ -72,20 +75,22 @@ export default function ContactSection() {
           </div>
 
           {/* Form */}
-          <div>
-            <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="rounded-2xl bg-card p-8 premium-shadow">
+            <h3 className="font-heading font-bold text-card-foreground text-lg mb-6">Envia'ns un missatge</h3>
+            <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <label htmlFor="nom" className="text-sm font-medium text-foreground mb-1 block">Nom</label>
+                <label htmlFor="nom" className="text-sm font-medium text-foreground mb-1.5 block">Nom</label>
                 <Input
                   id="nom"
                   value={form.nom}
                   onChange={e => setForm(f => ({ ...f, nom: e.target.value }))}
                   placeholder="El teu nom"
                   maxLength={100}
+                  className="rounded-xl h-11"
                 />
               </div>
               <div>
-                <label htmlFor="telefon" className="text-sm font-medium text-foreground mb-1 block">Telèfon</label>
+                <label htmlFor="telefon" className="text-sm font-medium text-foreground mb-1.5 block">Telèfon</label>
                 <Input
                   id="telefon"
                   type="tel"
@@ -93,10 +98,11 @@ export default function ContactSection() {
                   onChange={e => setForm(f => ({ ...f, telefon: e.target.value }))}
                   placeholder="El teu telèfon"
                   maxLength={20}
+                  className="rounded-xl h-11"
                 />
               </div>
               <div>
-                <label htmlFor="missatge" className="text-sm font-medium text-foreground mb-1 block">Missatge</label>
+                <label htmlFor="missatge" className="text-sm font-medium text-foreground mb-1.5 block">Missatge</label>
                 <Textarea
                   id="missatge"
                   value={form.missatge}
@@ -104,9 +110,10 @@ export default function ContactSection() {
                   placeholder="Escriu el teu missatge..."
                   rows={5}
                   maxLength={1000}
+                  className="rounded-xl"
                 />
               </div>
-              <Button type="submit" size="lg" className="w-full">
+              <Button type="submit" size="lg" className="w-full rounded-full h-12">
                 <Send className="w-4 h-4 mr-2" /> Enviar missatge
               </Button>
             </form>

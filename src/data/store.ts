@@ -8,6 +8,15 @@ import hero3 from "@/assets/hero-3.jpg";
 
 export type CarStatus = "Disponible" | "Reservat" | "Venut";
 
+export interface CarImage {
+  id: string;
+  sourceType: "url" | "file";
+  url: string; // URL or data URL from file upload
+  alt: string;
+  sortOrder: number;
+  isCover: boolean;
+}
+
 export interface Car {
   id: string;
   brand: string;
@@ -17,8 +26,40 @@ export interface Car {
   price: number;
   description: string;
   status: CarStatus;
-  photos: string[];
+  photos: string[]; // legacy support
+  images?: CarImage[];
   specs?: Record<string, string>;
+}
+
+export interface HeroImage {
+  id: string;
+  sourceType: "url" | "file";
+  url: string;
+  title?: string;
+  alt: string;
+  active: boolean;
+  sortOrder: number;
+}
+
+export interface ReviewsConfig {
+  googlePlaceId: string;
+  apiKeyNote: string;
+  liveSyncEnabled: boolean;
+  fallbackSummary: string;
+  rating: number;
+  reviewCount: number;
+}
+
+export interface SiteConfig {
+  phone: string;
+  address: string;
+  city: string;
+  postalCode: string;
+  province: string;
+  heroHeadline: string;
+  heroSubheadline: string;
+  openingHours: string;
+  weekendHours: string;
 }
 
 export interface Review {
@@ -29,7 +70,11 @@ export interface Review {
   date: string;
 }
 
-const defaultHeroImages: string[] = [hero1, hero2, hero3];
+const defaultHeroImages: HeroImage[] = [
+  { id: "h1", sourceType: "file", url: hero1, title: "", alt: "Garatge Oliveras taller", active: true, sortOrder: 0 },
+  { id: "h2", sourceType: "file", url: hero2, title: "", alt: "Reparació de vehicles", active: true, sortOrder: 1 },
+  { id: "h3", sourceType: "file", url: hero3, title: "", alt: "Cotxes d'ocasió", active: true, sortOrder: 2 },
+];
 
 const defaultCars: Car[] = [
   {
@@ -42,14 +87,7 @@ const defaultCars: Car[] = [
     description: "Seat León en perfecte estat, llibre de manteniment al dia. Motor 1.6 TDI de 115 CV, canvi manual de 6 velocitats. Equipat amb navegador, càmera de marxa enrere i sensors d'aparcament.",
     status: "Disponible",
     photos: [car3],
-    specs: {
-      "Motor": "1.6 TDI 115 CV",
-      "Canvi": "Manual 6 velocitats",
-      "Combustible": "Dièsel",
-      "Color": "Blau fosc",
-      "Portes": "5",
-      "Potència": "115 CV",
-    },
+    specs: { "Motor": "1.6 TDI 115 CV", "Canvi": "Manual 6 velocitats", "Combustible": "Dièsel", "Color": "Blau fosc", "Portes": "5", "Potència": "115 CV" },
   },
   {
     id: "2",
@@ -61,14 +99,7 @@ const defaultCars: Car[] = [
     description: "Renault Captur en excel·lent estat. SUV compacte amb motor dièsel econòmic. Equipat amb pantalla tàctil, climatitzador automàtic i ajuda a l'aparcament.",
     status: "Disponible",
     photos: [car2],
-    specs: {
-      "Motor": "1.5 dCi 115 CV",
-      "Canvi": "Manual 6 velocitats",
-      "Combustible": "Dièsel",
-      "Color": "Vermell",
-      "Portes": "5",
-      "Potència": "115 CV",
-    },
+    specs: { "Motor": "1.5 dCi 115 CV", "Canvi": "Manual 6 velocitats", "Combustible": "Dièsel", "Color": "Vermell", "Portes": "5", "Potència": "115 CV" },
   },
   {
     id: "3",
@@ -80,14 +111,7 @@ const defaultCars: Car[] = [
     description: "Toyota Corolla híbrid amb molt poc quilometratge. Consum molt reduït i manteniment econòmic. Equipat amb sistema de seguretat Toyota Safety Sense.",
     status: "Reservat",
     photos: [car1],
-    specs: {
-      "Motor": "1.8 Hybrid 122 CV",
-      "Canvi": "Automàtic CVT",
-      "Combustible": "Híbrid",
-      "Color": "Plata",
-      "Portes": "5",
-      "Potència": "122 CV",
-    },
+    specs: { "Motor": "1.8 Hybrid 122 CV", "Canvi": "Automàtic CVT", "Combustible": "Híbrid", "Color": "Plata", "Portes": "5", "Potència": "122 CV" },
   },
   {
     id: "4",
@@ -99,15 +123,7 @@ const defaultCars: Car[] = [
     description: "Ford Galaxy de 7 places, ideal per a famílies. Motor 2.0 TDCi de 150 CV, canvi automàtic. Equipat amb seients de cuir, sostre panoràmic i navegador.",
     status: "Venut",
     photos: [car4],
-    specs: {
-      "Motor": "2.0 TDCi 150 CV",
-      "Canvi": "Automàtic 6 velocitats",
-      "Combustible": "Dièsel",
-      "Color": "Blanc",
-      "Portes": "5",
-      "Potència": "150 CV",
-      "Places": "7",
-    },
+    specs: { "Motor": "2.0 TDCi 150 CV", "Canvi": "Automàtic 6 velocitats", "Combustible": "Dièsel", "Color": "Blanc", "Portes": "5", "Potència": "150 CV", "Places": "7" },
   },
 ];
 
@@ -120,38 +136,83 @@ const defaultReviews: Review[] = [
   { id: "6", name: "Marta V.", rating: 4, text: "Bon tracte i bon preu. Vaig fer el canvi d'oli i filtres sense cita prèvia.", date: "Fa 5 mesos" },
 ];
 
-// Simple localStorage-based store
-const STORAGE_KEY_CARS = "garatge-oliveras-cars";
-const STORAGE_KEY_HERO = "garatge-oliveras-hero";
+const defaultReviewsConfig: ReviewsConfig = {
+  googlePlaceId: "",
+  apiKeyNote: "Configura la clau d'API de Google Places per sincronitzar ressenyes reals.",
+  liveSyncEnabled: false,
+  fallbackSummary: "4.6 estrelles basades en 148 ressenyes de Google",
+  rating: 4.6,
+  reviewCount: 148,
+};
 
-export function getCars(): Car[] {
+const defaultSiteConfig: SiteConfig = {
+  phone: "+34 972 78 81 02",
+  address: "Carretera Orriols - L'Escala, 16, Bajo",
+  city: "Viladamat",
+  postalCode: "17137",
+  province: "Girona",
+  heroHeadline: "Taller mecànic de confiança a Viladamat",
+  heroSubheadline: "Reparació, manteniment i venda de cotxes d'ocasió",
+  openingHours: "Dilluns – Divendres: 9:00–13:30 / 15:00–18:30",
+  weekendHours: "Dissabte i diumenge: Tancat",
+};
+
+// Storage keys
+const STORAGE_CARS = "go-cars";
+const STORAGE_HERO = "go-hero-v2";
+const STORAGE_REVIEWS_CONFIG = "go-reviews-config";
+const STORAGE_SITE_CONFIG = "go-site-config";
+
+function loadJson<T>(key: string, fallback: T): T {
   try {
-    const stored = localStorage.getItem(STORAGE_KEY_CARS);
-    if (stored) return JSON.parse(stored);
+    const s = localStorage.getItem(key);
+    if (s) return JSON.parse(s);
   } catch {}
-  return defaultCars;
+  return fallback;
 }
 
-export function saveCars(cars: Car[]) {
-  localStorage.setItem(STORAGE_KEY_CARS, JSON.stringify(cars));
+function saveJson(key: string, data: unknown) {
+  localStorage.setItem(key, JSON.stringify(data));
 }
 
-export function getHeroImages(): string[] {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY_HERO);
-    if (stored) return JSON.parse(stored);
-  } catch {}
-  return defaultHeroImages;
-}
+export function getCars(): Car[] { return loadJson(STORAGE_CARS, defaultCars); }
+export function saveCars(cars: Car[]) { saveJson(STORAGE_CARS, cars); }
 
-export function saveHeroImages(images: string[]) {
-  localStorage.setItem(STORAGE_KEY_HERO, JSON.stringify(images));
-}
+export function getHeroImages(): HeroImage[] { return loadJson(STORAGE_HERO, defaultHeroImages); }
+export function saveHeroImages(images: HeroImage[]) { saveJson(STORAGE_HERO, images); }
 
-export function getReviews(): Review[] {
-  return defaultReviews;
-}
+export function getReviewsConfig(): ReviewsConfig { return loadJson(STORAGE_REVIEWS_CONFIG, defaultReviewsConfig); }
+export function saveReviewsConfig(config: ReviewsConfig) { saveJson(STORAGE_REVIEWS_CONFIG, config); }
+
+export function getSiteConfig(): SiteConfig { return loadJson(STORAGE_SITE_CONFIG, defaultSiteConfig); }
+export function saveSiteConfig(config: SiteConfig) { saveJson(STORAGE_SITE_CONFIG, config); }
+
+export function getReviews(): Review[] { return defaultReviews; }
 
 export function getUniqueBrands(cars: Car[]): string[] {
   return [...new Set(cars.map(c => c.brand))].sort();
+}
+
+export function getCarCoverPhoto(car: Car): string {
+  if (car.images && car.images.length > 0) {
+    const cover = car.images.find(i => i.isCover) || car.images[0];
+    return cover.url;
+  }
+  return car.photos[0] || "";
+}
+
+export function getCarPhotos(car: Car): string[] {
+  if (car.images && car.images.length > 0) {
+    return car.images.sort((a, b) => a.sortOrder - b.sortOrder).map(i => i.url);
+  }
+  return car.photos;
+}
+
+export function fileToDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
 }
