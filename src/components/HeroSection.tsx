@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Phone, Car, Star, Shield, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getHeroImages, getSiteConfig } from "@/data/store";
+import { useStoreData } from "@/hooks/use-store";
 import { Link } from "react-router-dom";
 
 const trustBadges = [
@@ -11,8 +12,9 @@ const trustBadges = [
 ];
 
 export default function HeroSection() {
-  const heroImages = getHeroImages().filter(h => h.active).sort((a, b) => a.sortOrder - b.sortOrder);
-  const siteConfig = getSiteConfig();
+  const allHeroImages = useStoreData(getHeroImages);
+  const heroImages = allHeroImages.filter(h => h.active).sort((a, b) => a.sortOrder - b.sortOrder);
+  const siteConfig = useStoreData(getSiteConfig);
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {

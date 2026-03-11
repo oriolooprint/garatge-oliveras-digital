@@ -1,11 +1,12 @@
 import { getCars } from "@/data/store";
+import { useStoreData } from "@/hooks/use-store";
 import CarCard from "./CarCard";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 
 export default function CarsSection() {
-  const cars = getCars().filter(c => c.status !== "Venut").slice(0, 4);
+  const cars = useStoreData(getCars).filter(c => c.status !== "Venut").slice(0, 4);
 
   return (
     <section id="cotxes" className="section-padding section-dark">

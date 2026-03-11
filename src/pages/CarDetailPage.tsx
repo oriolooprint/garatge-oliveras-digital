@@ -1,5 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { getCars, getCarPhotos } from "@/data/store";
+import { useStoreData } from "@/hooks/use-store";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AdminGear from "@/components/AdminGear";
@@ -16,7 +17,7 @@ const statusClass: Record<string, string> = {
 
 export default function CarDetailPage() {
   const { id } = useParams();
-  const car = getCars().find(c => c.id === id);
+  const car = useStoreData(getCars).find(c => c.id === id);
   const [selectedPhoto, setSelectedPhoto] = useState(0);
 
   if (!car) {
