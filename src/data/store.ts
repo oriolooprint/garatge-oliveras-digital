@@ -11,7 +11,7 @@ export type CarStatus = "Disponible" | "Reservat" | "Venut";
 export interface CarImage {
   id: string;
   sourceType: "url" | "file";
-  url: string; // URL or data URL from file upload
+  url: string;
   alt: string;
   sortOrder: number;
   isCover: boolean;
@@ -26,7 +26,7 @@ export interface Car {
   price: number;
   description: string;
   status: CarStatus;
-  photos: string[]; // legacy support
+  photos: string[];
   images?: CarImage[];
   specs?: Record<string, string>;
 }
@@ -80,19 +80,19 @@ const defaultCars: Car[] = [
   {
     id: "1",
     brand: "Seat",
-    model: "León 1.6 TDI Style",
+    model: "León 1.6 TDI Style (exemple 1)",
     year: 2019,
     km: 78000,
     price: 14900,
     description: "Seat León en perfecte estat, llibre de manteniment al dia. Motor 1.6 TDI de 115 CV, canvi manual de 6 velocitats. Equipat amb navegador, càmera de marxa enrere i sensors d'aparcament.",
     status: "Disponible",
-    photos: [car3],
+    photos: [car1],
     specs: { "Motor": "1.6 TDI 115 CV", "Canvi": "Manual 6 velocitats", "Combustible": "Dièsel", "Color": "Blau fosc", "Portes": "5", "Potència": "115 CV" },
   },
   {
     id: "2",
     brand: "Renault",
-    model: "Captur Zen 1.5 dCi",
+    model: "Captur Zen 1.5 dCi (exemple 2)",
     year: 2020,
     km: 52000,
     price: 16500,
@@ -104,19 +104,19 @@ const defaultCars: Car[] = [
   {
     id: "3",
     brand: "Toyota",
-    model: "Corolla 1.8 Hybrid",
+    model: "Corolla 1.8 Hybrid (exemple 3)",
     year: 2021,
     km: 35000,
     price: 22900,
     description: "Toyota Corolla híbrid amb molt poc quilometratge. Consum molt reduït i manteniment econòmic. Equipat amb sistema de seguretat Toyota Safety Sense.",
     status: "Reservat",
-    photos: [car1],
+    photos: [car3],
     specs: { "Motor": "1.8 Hybrid 122 CV", "Canvi": "Automàtic CVT", "Combustible": "Híbrid", "Color": "Plata", "Portes": "5", "Potència": "122 CV" },
   },
   {
     id: "4",
     brand: "Ford",
-    model: "Galaxy 2.0 TDCi Titanium",
+    model: "Galaxy 2.0 TDCi Titanium (exemple 4)",
     year: 2018,
     km: 110000,
     price: 18500,
@@ -163,6 +163,18 @@ const STORAGE_HERO = "go-hero-v2";
 const STORAGE_REVIEWS_CONFIG = "go-reviews-config";
 const STORAGE_SITE_CONFIG = "go-site-config";
 
+// Event-based reactivity for admin changes
+const STORE_CHANGE_EVENT = "store-change";
+
+export function emitStoreChange() {
+  window.dispatchEvent(new CustomEvent(STORE_CHANGE_EVENT));
+}
+
+export function onStoreChange(callback: () => void): () => void {
+  window.addEventListener(STORE_CHANGE_EVENT, callback);
+  return () => window.removeEventListener(STORE_CHANGE_EVENT, callback);
+}
+
 function loadJson<T>(key: string, fallback: T): T {
   try {
     const s = localStorage.getItem(key);
@@ -176,16 +188,16 @@ function saveJson(key: string, data: unknown) {
 }
 
 export function getCars(): Car[] { return loadJson(STORAGE_CARS, defaultCars); }
-export function saveCars(cars: Car[]) { saveJson(STORAGE_CARS, cars); }
+export function saveCars(cars: Car[]) { saveJson(STORAGE_CARS, cars); emitStoreChange(); }
 
 export function getHeroImages(): HeroImage[] { return loadJson(STORAGE_HERO, defaultHeroImages); }
-export function saveHeroImages(images: HeroImage[]) { saveJson(STORAGE_HERO, images); }
+export function saveHeroImages(images: HeroImage[]) { saveJson(STORAGE_HERO, images); emitStoreChange(); }
 
 export function getReviewsConfig(): ReviewsConfig { return loadJson(STORAGE_REVIEWS_CONFIG, defaultReviewsConfig); }
-export function saveReviewsConfig(config: ReviewsConfig) { saveJson(STORAGE_REVIEWS_CONFIG, config); }
+export function saveReviewsConfig(config: ReviewsConfig) { saveJson(STORAGE_REVIEWS_CONFIG, config); emitStoreChange(); }
 
 export function getSiteConfig(): SiteConfig { return loadJson(STORAGE_SITE_CONFIG, defaultSiteConfig); }
-export function saveSiteConfig(config: SiteConfig) { saveJson(STORAGE_SITE_CONFIG, config); }
+export function saveSiteConfig(config: SiteConfig) { saveJson(STORAGE_SITE_CONFIG, config); emitStoreChange(); }
 
 export function getReviews(): Review[] { return defaultReviews; }
 
