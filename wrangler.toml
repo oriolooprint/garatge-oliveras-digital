@@ -1,0 +1,15 @@
+# Cloudflare Pages Configuration for Vite
+
+# This configuration file is for deploying a Vite app on Cloudflare Pages.
+# Change the build command and publish directory as necessary.
+
+# Project settings
+build = {
+  command = "npm run build",
+  output = "dist"
+}
+
+# Routes settings
+[[routes]]
+  src = "/*"
+  dest = "index.html"
