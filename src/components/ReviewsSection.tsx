@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Star, ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
 import { getReviews, getReviewsConfig } from "@/data/store";
 import { Button } from "@/components/ui/button";
@@ -7,7 +7,19 @@ export default function ReviewsSection() {
   const reviews = getReviews();
   const config = getReviewsConfig();
   const [idx, setIdx] = useState(0);
-  const visibleCount = typeof window !== "undefined" && window.innerWidth >= 768 ? 3 : 1;
+  const [visibleCount, setVisibleCount] = useState(1);
+
+  useEffect(() => {
+    const update = () => setVisibleCount(window.innerWidth >= 768 ? 3 : 1);
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  // Clamp index when visibleCount changes
+  useEffect(() => {
+    setIdx(i => Math.min(i, Math.max(0, reviews.length - visibleCount)));
+  }, [visibleCount, reviews.length]);
 
   const prev = () => setIdx(i => (i === 0 ? reviews.length - visibleCount : i - 1));
   const next = () => setIdx(i => (i >= reviews.length - visibleCount ? 0 : i + 1));
