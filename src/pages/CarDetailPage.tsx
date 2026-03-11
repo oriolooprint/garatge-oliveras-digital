@@ -17,7 +17,7 @@ const statusClass: Record<string, string> = {
 
 export default function CarDetailPage() {
   const { id } = useParams();
-  const car = getCars().find(c => c.id === id);
+  const car = useStoreData(getCars).find(c => c.id === id);
   const [selectedPhoto, setSelectedPhoto] = useState(0);
 
   if (!car) {
